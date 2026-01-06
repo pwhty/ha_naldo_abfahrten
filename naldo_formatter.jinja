@@ -1,0 +1,73 @@
+{% macro format_naldo_departure_response_for_departures_ui(entries) %}
+    {% set ns = namespace(out=[]) %}
+
+    {% for e in entries %}
+        {# --- Verspätung berechnen (falls Estimated ≠ Planned) --- #}
+        {% set delay = (
+            (as_timestamp(e.departureTimeEstimated | default(e.departureTimePlanned, true)) -
+            as_timestamp(e.departureTimePlanned)) / 60
+        ) | int %}
+
+        {% set ns.out = ns.out + [
+        {
+            "ziel": e.transportation.destination.name,
+            "zeit": e.departureTimePlanned | as_timestamp | timestamp_local,
+            "verspaetung": delay,
+            "verkehrsmittel": e.transportation.name | default (e.transportation.number) | replace("Stadtverkehr Reutlingen ", "Buslinie "),
+            "ueber": (e.transportation.description | default('', true)).split(' - '),
+            "meldungen": [
+            {
+                "prioritaet": "HOCH",
+                "text": "ICE 2827: Sonderfahrt"
+            }
+            ],
+        }
+        ] %}
+    {% endfor %}
+    {{ ns.out }}  
+{% endmacro %}
+
+{% macro format_naldo_arrival_response_for_departures_ui(entries) %}
+    {% set ns = namespace(out=[]) %}
+
+    {% for e in entries %}
+        {# --- Verspätung berechnen (falls Estimated ≠ Planned) --- #}
+        {% set delay = (
+            (as_timestamp(e.arrivalTimeEstimated | default(e.arrivalTimePlanned, true)) -
+            as_timestamp(e.arrivalTimeBaseTimetable)) / 60
+        ) | int %}
+
+        {% set ns.out = ns.out + [
+        {
+            "ziel": e.transportation.origin.name,
+            "zeit": e.arrivalTimePlanned | as_timestamp | timestamp_local,
+            "verspaetung": delay,
+            "verkehrsmittel": e.transportation.name | default (e.transportation.number) | replace("Stadtverkehr Reutlingen ", "Buslinie "),
+            "ueber": (e.transportation.description | default('', true)).split(' - '),
+            "meldungen": [
+            {
+                "prioritaet": "HOCH",
+                "text": "ICE 2827: Sonderfahrt"
+            }
+            ],
+        }
+        ] %}
+    {% endfor %}
+    {{ ns.out }}  
+{% endmacro %}
+
+{% macro format_naldo_departure_response_for_state(entries) %}
+    {% if entries | length > 0 %}
+        {{ ((as_timestamp(entries[0].departureTimeEstimated | default(entries[0].departureTimePlanned)) - now().timestamp()) / 60) | int }}
+    {% else %}
+        unbekannt
+    {% endif %}
+{% endmacro %}
+
+{% macro format_naldo_arrival_response_for_state(entries) %}
+    {% if entries | length > 0 %}
+        {{ ((as_timestamp(entries[0].arrivalTimeEstimated | default(entries[0].arrivalTimePlanned)) - now().timestamp()) / 60) | int }}
+    {% else %}
+        unbekannt
+    {% endif %}
+{% endmacro %}
