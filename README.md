@@ -8,8 +8,8 @@ Die Lösung besteht aus:
 - Jinja-Macros zur Datenformatierung
 - einer Lovelace-Card für die visuelle Anzeige
 
-<img width="539" height="434" alt="image" src="https://github.com/user-attachments/assets/812b35ff-fff1-4e37-a14c-3add2f9cfac5" />
-<img width="549" height="434" alt="image" src="https://github.com/user-attachments/assets/5229f0ba-2d01-456e-988d-76620228500a" />
+<img width="525" height="410" alt="image" src="https://github.com/user-attachments/assets/b40c938a-751b-4abe-b4b1-3da5a984ac78" />
+<img width="525" height="410" alt="image" src="https://github.com/user-attachments/assets/1228260d-9e24-429d-b721-8a1eb8c8f166" />
 
 ---
 
